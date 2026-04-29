@@ -34,3 +34,7 @@ O projeto segue a arquitetura de 4 camadas:
 /docs
  ├── testes     # Plano de teste, roteiros e evidências
 /slides         # Apresentação final do projeto
+
+LINK DO PRÉ-PROJETO: https://1drv.ms/w/c/173998cff18a50ec/IQDQm3aOfTfUR4vm56oZIFMoAdiDm8KfdyohKAXmvOCt2PM?e=gNOVaZ
+
+LINK DO CANVAS: https://1drv.ms/p/c/173998cff18a50ec/IQAvjh9iHGz-Qb8YxDG7iGP-ASAwixbN-LaIcYBoFet9cPU?e=u9GJyx
