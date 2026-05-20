@@ -23,6 +23,18 @@ public class TarefaService {
         return repository.findAll();
     }
 
+    // Novo método para buscar com filtros
+    public List<Tarefa> buscarComFiltros(Long disciplinaId, StatusTarefa status) {
+        if (disciplinaId != null && status != null) {
+            return repository.findByDisciplinaIdAndStatus(disciplinaId, status);
+        } else if (disciplinaId != null) {
+            return repository.findByDisciplinaId(disciplinaId);
+        } else if (status != null) {
+            return repository.findByStatus(status);
+        }
+        return repository.findAll(); // Se não passar nenhum filtro, traz todas
+    }
+
     public Tarefa buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));

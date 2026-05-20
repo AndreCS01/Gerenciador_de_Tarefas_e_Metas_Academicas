@@ -22,8 +22,11 @@ public class TarefaController {
     }
 
     @GetMapping
-    public List<Tarefa> listar() {
-        return service.listarTodas();
+    public List<Tarefa> listar(
+            @RequestParam(required = false) Long disciplinaId,
+            @RequestParam(required = false) StatusTarefa status) {
+        
+        return service.buscarComFiltros(disciplinaId, status);
     }
 
     // Endpoint específico para mudar apenas o status da tarefa (usando PATCH)

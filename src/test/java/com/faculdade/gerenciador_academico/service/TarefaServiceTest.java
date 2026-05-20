@@ -11,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,5 +82,53 @@ class TarefaServiceTest {
         // Verifica se o status mudou antes de salvar
         assertEquals(StatusTarefa.EM_PROGRESSO, atualizada.getStatus());
         verify(repository, times(1)).save(tarefaMock);
+    }
+
+    @Test
+    void deveBuscarTarefasPorDisciplinaEStatus() {
+        // Simula o banco retornando uma lista com a nossa tarefa mockada
+        when(repository.findByDisciplinaIdAndStatus(1L, StatusTarefa.A_FAZER))
+                .thenReturn(List.of(tarefaMock));
+
+        List<Tarefa> resultado = service.buscarComFiltros(1L, StatusTarefa.A_FAZER);
+
+        // Validações
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals(StatusTarefa.A_FAZER, resultado.get(0).getStatus());
+        
+        // Verifica se o método correto do repositório foi chamado
+        verify(repository, times(1)).findByDisciplinaIdAndStatus(1L, StatusTarefa.A_FAZER);
+    }
+
+    @Test
+    void deveBuscarTarefasSomentePorDisciplina() {
+        when(repository.findByDisciplinaId(1L)).thenReturn(List.of(tarefaMock));
+
+        List<Tarefa> resultado = service.buscarComFiltros(1L, null);
+
+        assertFalse(resultado.isEmpty());
+        verify(repository, times(1)).findByDisciplinaId(1L);
+        verify(repository, never()).findAll(); // Garante que não buscou tudo atoa
+    }
+
+    @Test
+    void deveBuscarTarefasSomentePorStatus() {
+        when(repository.findByStatus(StatusTarefa.A_FAZER)).thenReturn(List.of(tarefaMock));
+
+        List<Tarefa> resultado = service.buscarComFiltros(null, StatusTarefa.A_FAZER);
+
+        assertFalse(resultado.isEmpty());
+        verify(repository, times(1)).findByStatus(StatusTarefa.A_FAZER);
+    }
+
+    @Test
+    void deveBuscarTodasAsTarefasQuandoSemFiltros() {
+        when(repository.findAll()).thenReturn(List.of(tarefaMock));
+
+        List<Tarefa> resultado = service.buscarComFiltros(null, null);
+
+        assertFalse(resultado.isEmpty());
+        verify(repository, times(1)).findAll();
     }
 }
