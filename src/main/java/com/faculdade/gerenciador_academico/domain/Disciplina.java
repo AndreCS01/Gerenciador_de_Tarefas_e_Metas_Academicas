@@ -9,6 +9,7 @@ public class Disciplina {
     private Long id;
     private String nome;
     private String professor;
+    private String semestre;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -17,4 +18,6 @@ public class Disciplina {
     public void setNome(String nome) { this.nome = nome; }
     public String getProfessor() { return professor; }
     public void setProfessor(String professor) { this.professor = professor; }
+    public String getSemestre() { return semestre; }
+    public void setSemestre(String semestre) { this.semestre = semestre; }
 }
