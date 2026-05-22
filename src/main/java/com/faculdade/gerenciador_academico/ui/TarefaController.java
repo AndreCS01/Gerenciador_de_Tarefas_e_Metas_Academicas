@@ -34,4 +34,16 @@ public class TarefaController {
     public Tarefa atualizarStatus(@PathVariable Long id, @RequestParam StatusTarefa status) {
         return service.atualizarStatus(id, status);
     }
+
+    // Endpoint para o Dashboard: /tarefas/pendencias
+    @GetMapping("/pendencias")
+    public List<Tarefa> listarPendenciasDaSemana() {
+        return service.buscarPendenciasProximosSeteDias();
+    }
+
+    // Endpoint para rodar a rotina de risco: /tarefas/verificar-atrasos
+    @PostMapping("/verificar-atrasos")
+    public void forcarVerificacaoDeAtrasos() {
+        service.verificarEAtualizarTarefasAtrasadas();
+    }
 }

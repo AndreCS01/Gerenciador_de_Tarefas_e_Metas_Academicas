@@ -11,10 +11,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -130,5 +132,36 @@ class TarefaServiceTest {
 
         assertFalse(resultado.isEmpty());
         verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    void deveBuscarPendenciasDosProximosSeteDias() {
+        LocalDate hoje = LocalDate.now();
+        LocalDate daquiSeteDias = hoje.plusDays(7);
+        
+        when(repository.findByDataLimiteBetween(hoje, daquiSeteDias))
+                .thenReturn(List.of(tarefaMock));
+
+        List<Tarefa> resultado = service.buscarPendenciasProximosSeteDias();
+
+        assertFalse(resultado.isEmpty());
+        verify(repository, times(1)).findByDataLimiteBetween(hoje, daquiSeteDias);
+    }
+
+    @Test
+    void deveAtualizarParaAtrasadoTarefasVencidasENaoConcluidas() {
+        LocalDate hoje = LocalDate.now();
+        tarefaMock.setStatus(StatusTarefa.A_FAZER); // Simulando que o aluno esqueceu
+        
+        when(repository.findByDataLimiteBeforeAndStatusNot(hoje, StatusTarefa.CONCLUIDO))
+                .thenReturn(List.of(tarefaMock));
+
+        service.verificarEAtualizarTarefasAtrasadas();
+
+        // Verifica se o status mudou para ATRASADO
+        assertEquals(StatusTarefa.ATRASADO, tarefaMock.getStatus());
+        
+        // Verifica se o método de salvar em lote foi chamado
+        verify(repository, times(1)).saveAll(anyList());
     }
 }
