@@ -28,6 +28,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(req -> {
                     // Libera apenas o endpoint de login para acessos sem token
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/usuarios").permitAll();
                     // Bloqueia todo o resto
                     req.anyRequest().authenticated();
                 })
