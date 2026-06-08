@@ -21,6 +21,10 @@ public class Tarefa {
     @JoinColumn(name = "disciplina_id", nullable = false)
     private Disciplina disciplina;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -39,4 +43,7 @@ public class Tarefa {
     
     public Disciplina getDisciplina() { return disciplina; }
     public void setDisciplina(Disciplina disciplina) { this.disciplina = disciplina; }
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 }

@@ -11,13 +11,23 @@ public class Disciplina {
     private String professor;
     private String semestre;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
+
     public String getProfessor() { return professor; }
     public void setProfessor(String professor) { this.professor = professor; }
+
     public String getSemestre() { return semestre; }
     public void setSemestre(String semestre) { this.semestre = semestre; }
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 }

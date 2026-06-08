@@ -2,66 +2,70 @@ package com.faculdade.gerenciador_academico.service;
 
 import com.faculdade.gerenciador_academico.domain.StatusTarefa;
 import com.faculdade.gerenciador_academico.domain.Tarefa;
+import com.faculdade.gerenciador_academico.domain.Usuario;
 import com.faculdade.gerenciador_academico.infra.TarefaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class TarefaService {
-    private final TarefaRepository repository;
 
-    public TarefaService(TarefaRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private TarefaRepository repository;
 
-    public Tarefa salvar(Tarefa tarefa) {
+    // Vincula a tarefa ao usuário antes de salvar
+    public Tarefa salvar(Tarefa tarefa, Usuario usuario) {
+        tarefa.setUsuario(usuario);
         return repository.save(tarefa);
     }
 
-    public List<Tarefa> listarTodas() {
-        return repository.findAll();
+    // Lista apenas as tarefas do usuário logado
+    public List<Tarefa> listarTodas(Long usuarioId) {
+        return repository.findByUsuarioId(usuarioId);
     }
 
-    // Novo método para buscar com filtros
-    public List<Tarefa> buscarComFiltros(Long disciplinaId, StatusTarefa status) {
+    // Busca com filtros isolando os dados por usuário
+    public List<Tarefa> buscarComFiltros(Long disciplinaId, StatusTarefa status, Long usuarioId) {
         if (disciplinaId != null && status != null) {
-            return repository.findByDisciplinaIdAndStatus(disciplinaId, status);
+            return repository.findByDisciplinaIdAndStatusAndUsuarioId(disciplinaId, status, usuarioId);
         } else if (disciplinaId != null) {
-            return repository.findByDisciplinaId(disciplinaId);
+            return repository.findByDisciplinaIdAndUsuarioId(disciplinaId, usuarioId);
         } else if (status != null) {
-            return repository.findByStatus(status);
+            return repository.findByStatusAndUsuarioId(status, usuarioId);
         }
-        return repository.findAll(); // Se não passar nenhum filtro, traz todas
+        return repository.findByUsuarioId(usuarioId);
     }
 
-    public Tarefa buscarPorId(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
-    }
+    // Altera o status verificando se a tarefa pertence ao usuário logado
+    public Tarefa atualizarStatus(Long id, StatusTarefa novoStatus, Long usuarioId) {
+        Tarefa tarefa = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada!"));
+        
+        if (!tarefa.getUsuario().getId().equals(usuarioId)) {
+            throw new RuntimeException("Acesso negado: esta tarefa não pertence a você.");
+        }
 
-    public Tarefa atualizarStatus(Long id, StatusTarefa novoStatus) {
-        Tarefa tarefa = buscarPorId(id);
         tarefa.setStatus(novoStatus);
         return repository.save(tarefa);
     }
 
-    // Regra 1: Retorna o que vence nos próximos 7 dias
-    public List<Tarefa> buscarPendenciasProximosSeteDias() {
+    // Regra 1: Dashboard de pendências isolado por usuário
+    public List<Tarefa> buscarPendenciasProximosSeteDias(Long usuarioId) {
         LocalDate hoje = LocalDate.now();
         LocalDate daquiSeteDias = hoje.plusDays(7);
-        return repository.findByDataLimiteBetween(hoje, daquiSeteDias);
+        return repository.findByDataLimiteBetweenAndUsuarioId(hoje, daquiSeteDias, usuarioId);
     }
 
-    // Regra 2: Varre o banco e marca como ATRASADO o que passou do prazo
-    public void verificarEAtualizarTarefasAtrasadas() {
+    // Regra 2: Varre o banco e atualiza atrasos isolando por usuário
+    public void verificarEAtualizarTarefasAtrasadas(Long usuarioId) {
         LocalDate hoje = LocalDate.now();
         
-        // Pega tudo que venceu antes de hoje e que NÃO está com status CONCLUIDO
-        List<Tarefa> tarefasVencidas = repository.findByDataLimiteBeforeAndStatusNot(hoje, StatusTarefa.CONCLUIDO);
+        List<Tarefa> tarefasVencidas = repository
+                .findByDataLimiteBeforeAndStatusNotAndUsuarioId(hoje, StatusTarefa.CONCLUIDO, usuarioId);
 
-        // Altera o status de todas para ATRASADO e salva no banco de uma vez
         for (Tarefa tarefa : tarefasVencidas) {
             tarefa.setStatus(StatusTarefa.ATRASADO);
         }
@@ -70,5 +74,4 @@ public class TarefaService {
             repository.saveAll(tarefasVencidas);
         }
     }
-
 }

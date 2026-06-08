@@ -11,18 +11,15 @@ import java.util.List;
 @Repository
 public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
     
-    // Busca todas as tarefas de uma disciplina específica
-    List<Tarefa> findByDisciplinaId(Long disciplinaId);
+    // Busca todas as tarefas do usuário logado
+    List<Tarefa> findByUsuarioId(Long usuarioId);
     
-    // Busca todas as tarefas que estão em um status específico (ex: A_FAZER)
-    List<Tarefa> findByStatus(StatusTarefa status);
+    // Filtros de busca protegidos
+    List<Tarefa> findByDisciplinaIdAndUsuarioId(Long disciplinaId, Long usuarioId);
+    List<Tarefa> findByStatusAndUsuarioId(StatusTarefa status, Long usuarioId);
+    List<Tarefa> findByDisciplinaIdAndStatusAndUsuarioId(Long disciplinaId, StatusTarefa status, Long usuarioId);
     
-    // Busca cruzando os dois filtros
-    List<Tarefa> findByDisciplinaIdAndStatus(Long disciplinaId, StatusTarefa status);
-
-    // Busca tarefas cujo prazo está entre hoje e os próximos 7 dias
-    List<Tarefa> findByDataLimiteBetween(LocalDate dataInicio, LocalDate dataFim);
-    
-    // Busca tarefas com data limite menor que hoje e que não estejam concluídas
-    List<Tarefa> findByDataLimiteBeforeAndStatusNot(LocalDate data, StatusTarefa status);
+    // Regras de Risco Acadêmico protegidas
+    List<Tarefa> findByDataLimiteBetweenAndUsuarioId(LocalDate dataInicio, LocalDate dataFim, Long usuarioId);
+    List<Tarefa> findByDataLimiteBeforeAndStatusNotAndUsuarioId(LocalDate data, StatusTarefa status, Long usuarioId);
 }

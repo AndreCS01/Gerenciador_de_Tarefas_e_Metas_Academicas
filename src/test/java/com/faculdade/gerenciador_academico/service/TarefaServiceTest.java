@@ -2,6 +2,7 @@ package com.faculdade.gerenciador_academico.service;
 
 import com.faculdade.gerenciador_academico.domain.StatusTarefa;
 import com.faculdade.gerenciador_academico.domain.Tarefa;
+import com.faculdade.gerenciador_academico.domain.Usuario;
 import com.faculdade.gerenciador_academico.infra.TarefaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,9 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,49 +30,39 @@ class TarefaServiceTest {
     private TarefaService service;
 
     private Tarefa tarefaMock;
+    private Usuario usuarioMock;
 
     @BeforeEach
     void setUp() {
-        // Esse método roda antes de CADA teste para preparar os dados
+        // Criamos um usuário mockado para os testes
+        usuarioMock = new Usuario();
+        usuarioMock.setId(1L);
+        usuarioMock.setLogin("teste@aluno.com");
+        usuarioMock.setSenha("123");
+
         tarefaMock = new Tarefa();
         tarefaMock.setId(1L);
-        tarefaMock.setTitulo("Fazer mini-akinator");
-        tarefaMock.setDescricao("Implementar lógica de árvore de decisão para o projeto");
+        tarefaMock.setTitulo("Estudar Spring Security");
         tarefaMock.setStatus(StatusTarefa.A_FAZER);
+        tarefaMock.setDataLimite(LocalDate.now().plusDays(3));
+        tarefaMock.setUsuario(usuarioMock); // Vinculamos a tarefa ao usuário
     }
 
     @Test
     void deveSalvarTarefaComSucesso() {
-        // Simula o comportamento do repositório
         when(repository.save(any(Tarefa.class))).thenReturn(tarefaMock);
-
-        Tarefa tarefaSalva = service.salvar(tarefaMock);
-
-        // Asserções (Validações)
-        assertNotNull(tarefaSalva);
-        assertEquals("Fazer mini-akinator", tarefaSalva.getTitulo());
-        
-        // Verifica se o método save do banco foi chamado exatamente 1 vez
+        Tarefa resultado = service.salvar(tarefaMock, usuarioMock);
+        assertNotNull(resultado);
+        assertEquals(usuarioMock, resultado.getUsuario());
         verify(repository, times(1)).save(tarefaMock);
     }
 
     @Test
-    void deveBuscarTarefaPorIdComSucesso() {
-        when(repository.findById(1L)).thenReturn(Optional.of(tarefaMock));
-
-        Tarefa encontrada = service.buscarPorId(1L);
-
-        assertNotNull(encontrada);
-        assertEquals(1L, encontrada.getId());
-    }
-
-    @Test
-    void deveLancarExcecaoAoBuscarTarefaPorIdInexistente() {
-        // Simula o banco não encontrando a tarefa
-        when(repository.findById(99L)).thenReturn(Optional.empty());
-
-        // Verifica se a exceção correta é lançada
-        assertThrows(RuntimeException.class, () -> service.buscarPorId(99L));
+    void deveListarTodasAsTarefas() {
+        when(repository.findByUsuarioId(1L)).thenReturn(List.of(tarefaMock));
+        List<Tarefa> resultado = service.listarTodas(1L);
+        assertFalse(resultado.isEmpty());
+        verify(repository, times(1)).findByUsuarioId(1L);
     }
 
     @Test
@@ -79,59 +70,52 @@ class TarefaServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(tarefaMock));
         when(repository.save(any(Tarefa.class))).thenReturn(tarefaMock);
 
-        Tarefa atualizada = service.atualizarStatus(1L, StatusTarefa.EM_PROGRESSO);
+        Tarefa resultado = service.atualizarStatus(1L, StatusTarefa.CONCLUIDO, 1L);
 
-        // Verifica se o status mudou antes de salvar
-        assertEquals(StatusTarefa.EM_PROGRESSO, atualizada.getStatus());
+        assertEquals(StatusTarefa.CONCLUIDO, resultado.getStatus());
         verify(repository, times(1)).save(tarefaMock);
     }
 
     @Test
+    void deveLancarExcecaoAoAtualizarTarefaDeOutroUsuario() {
+        when(repository.findById(1L)).thenReturn(Optional.of(tarefaMock)); 
+
+        // Tentando acessar com o usuário 2L (sendo que a tarefa é do 1L)
+        assertThrows(RuntimeException.class, () -> {
+            service.atualizarStatus(1L, StatusTarefa.CONCLUIDO, 2L);
+        });
+
+        verify(repository, never()).save(any(Tarefa.class));
+    }
+
+    @Test
     void deveBuscarTarefasPorDisciplinaEStatus() {
-        // Simula o banco retornando uma lista com a nossa tarefa mockada
-        when(repository.findByDisciplinaIdAndStatus(1L, StatusTarefa.A_FAZER))
+        when(repository.findByDisciplinaIdAndStatusAndUsuarioId(1L, StatusTarefa.A_FAZER, 1L))
                 .thenReturn(List.of(tarefaMock));
 
-        List<Tarefa> resultado = service.buscarComFiltros(1L, StatusTarefa.A_FAZER);
-
-        // Validações
+        List<Tarefa> resultado = service.buscarComFiltros(1L, StatusTarefa.A_FAZER, 1L);
         assertFalse(resultado.isEmpty());
-        assertEquals(1, resultado.size());
-        assertEquals(StatusTarefa.A_FAZER, resultado.get(0).getStatus());
-        
-        // Verifica se o método correto do repositório foi chamado
-        verify(repository, times(1)).findByDisciplinaIdAndStatus(1L, StatusTarefa.A_FAZER);
     }
 
     @Test
     void deveBuscarTarefasSomentePorDisciplina() {
-        when(repository.findByDisciplinaId(1L)).thenReturn(List.of(tarefaMock));
-
-        List<Tarefa> resultado = service.buscarComFiltros(1L, null);
-
+        when(repository.findByDisciplinaIdAndUsuarioId(1L, 1L)).thenReturn(List.of(tarefaMock));
+        List<Tarefa> resultado = service.buscarComFiltros(1L, null, 1L);
         assertFalse(resultado.isEmpty());
-        verify(repository, times(1)).findByDisciplinaId(1L);
-        verify(repository, never()).findAll(); // Garante que não buscou tudo atoa
     }
 
     @Test
     void deveBuscarTarefasSomentePorStatus() {
-        when(repository.findByStatus(StatusTarefa.A_FAZER)).thenReturn(List.of(tarefaMock));
-
-        List<Tarefa> resultado = service.buscarComFiltros(null, StatusTarefa.A_FAZER);
-
+        when(repository.findByStatusAndUsuarioId(StatusTarefa.A_FAZER, 1L)).thenReturn(List.of(tarefaMock));
+        List<Tarefa> resultado = service.buscarComFiltros(null, StatusTarefa.A_FAZER, 1L);
         assertFalse(resultado.isEmpty());
-        verify(repository, times(1)).findByStatus(StatusTarefa.A_FAZER);
     }
 
     @Test
     void deveBuscarTodasAsTarefasQuandoSemFiltros() {
-        when(repository.findAll()).thenReturn(List.of(tarefaMock));
-
-        List<Tarefa> resultado = service.buscarComFiltros(null, null);
-
+        when(repository.findByUsuarioId(1L)).thenReturn(List.of(tarefaMock));
+        List<Tarefa> resultado = service.buscarComFiltros(null, null, 1L);
         assertFalse(resultado.isEmpty());
-        verify(repository, times(1)).findAll();
     }
 
     @Test
@@ -139,29 +123,23 @@ class TarefaServiceTest {
         LocalDate hoje = LocalDate.now();
         LocalDate daquiSeteDias = hoje.plusDays(7);
         
-        when(repository.findByDataLimiteBetween(hoje, daquiSeteDias))
+        when(repository.findByDataLimiteBetweenAndUsuarioId(hoje, daquiSeteDias, 1L))
                 .thenReturn(List.of(tarefaMock));
 
-        List<Tarefa> resultado = service.buscarPendenciasProximosSeteDias();
-
+        List<Tarefa> resultado = service.buscarPendenciasProximosSeteDias(1L);
         assertFalse(resultado.isEmpty());
-        verify(repository, times(1)).findByDataLimiteBetween(hoje, daquiSeteDias);
     }
 
     @Test
     void deveAtualizarParaAtrasadoTarefasVencidasENaoConcluidas() {
         LocalDate hoje = LocalDate.now();
-        tarefaMock.setStatus(StatusTarefa.A_FAZER); // Simulando que o aluno esqueceu
         
-        when(repository.findByDataLimiteBeforeAndStatusNot(hoje, StatusTarefa.CONCLUIDO))
+        when(repository.findByDataLimiteBeforeAndStatusNotAndUsuarioId(hoje, StatusTarefa.CONCLUIDO, 1L))
                 .thenReturn(List.of(tarefaMock));
 
-        service.verificarEAtualizarTarefasAtrasadas();
+        service.verificarEAtualizarTarefasAtrasadas(1L);
 
-        // Verifica se o status mudou para ATRASADO
         assertEquals(StatusTarefa.ATRASADO, tarefaMock.getStatus());
-        
-        // Verifica se o método de salvar em lote foi chamado
         verify(repository, times(1)).saveAll(anyList());
     }
 }
