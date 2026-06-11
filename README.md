@@ -38,3 +38,9 @@ O projeto segue a arquitetura de 4 camadas:
 LINK DO PRÉ-PROJETO: https://1drv.ms/w/c/173998cff18a50ec/IQDQm3aOfTfUR4vm56oZIFMoAdiDm8KfdyohKAXmvOCt2PM?e=gNOVaZ
 
 LINK DO CANVAS: https://1drv.ms/p/c/173998cff18a50ec/IQAvjh9iHGz-Qb8YxDG7iGP-ASAwixbN-LaIcYBoFet9cPU?e=u9GJyx
+
+LINK RELATÓRIO FINAL UC HUB: https://1drv.ms/w/c/173998cff18a50ec/IQBo7pIYEZCPT4Owk4uhzYMTAa3J-LPRHiJWUZPVlpTWG6E?e=WDkQBg
+
+LINK DO PITCH: https://1drv.ms/p/c/173998cff18a50ec/IQALyiHu_V-URbmuhQfIGBSTAesbTbosKSsCBB5zKzrp-kc?e=NAtVQe
+
+LINK DO VÍDEO PITCH: https://1drv.ms/f/c/173998cff18a50ec/IgBHFnVGIs8uTr8zsGBRrddXAUlqgrlYNBArKAZWXfZ7Dps?e=XhW1Iw
