@@ -58,4 +58,10 @@ public class TarefaController {
         service.verificarEAtualizarTarefasAtrasadas(logado.getId());
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id, @AuthenticationPrincipal Usuario logado) {
+        service.deletar(id, logado.getId());
+        return ResponseEntity.noContent().build();
+    }
 }

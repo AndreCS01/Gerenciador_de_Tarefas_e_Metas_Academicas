@@ -74,4 +74,18 @@ public class TarefaService {
             repository.saveAll(tarefasVencidas);
         }
     }
+
+    public void deletar(Long id, Long usuarioId) {
+        // Busca a tarefa para garantir que ela existe
+        Tarefa tarefa = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tarefa não encontrada."));
+            
+        // Verifica se o usuário logado é o dono da tarefa
+        if (!tarefa.getUsuario().getId().equals(usuarioId)) {
+            throw new RuntimeException("Acesso negado: Você não tem permissão para excluir esta tarefa.");
+        }
+        
+        // Apaga a tarefa do banco de dados
+        repository.delete(tarefa);
+    }
 }
