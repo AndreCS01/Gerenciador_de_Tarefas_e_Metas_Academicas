@@ -28,6 +28,9 @@ Estudantes universitários frequentemente lidam com múltiplas disciplinas e dez
 * **Link do roteiros-de-teste.md:** https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/blob/main/docs/testes/roteiros-de-teste.md
 * **Link do usabilidade.md:** https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/blob/main/docs/testes/usabilidade.md
 
+## Link do repositório do Frontend
+* **Link:** https://github.com/AndreCS01/Gerenciador_Academico_Web
+
 ## 🧱 Estrutura de Pastas (Arquitetura)
 O projeto segue a arquitetura de 4 camadas:
 ```text
