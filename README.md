@@ -23,6 +23,11 @@ Estudantes universitários frequentemente lidam com múltiplas disciplinas e dez
 * **Testes BDD:** Cucumber
 * **Versionamento e Gestão:** GitHub (Git, Issues, Projects)
 
+## Documentação de Testes
+* **Link do plano-de-teste.md:** https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/blob/main/docs/testes/plano-de-teste.md
+* **Link do roteiros-de-teste.md:** https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/blob/main/docs/testes/roteiros-de-teste.md
+* **Link do usabilidade.md:** https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/blob/main/docs/testes/usabilidade.md
+
 ## 🧱 Estrutura de Pastas (Arquitetura)
 O projeto segue a arquitetura de 4 camadas:
 ```text

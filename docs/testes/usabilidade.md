@@ -17,9 +17,7 @@
 | ID | Perfil | Nível de experiência | Contexto (onde/como) | Observações |
 | :--- | :--- | :--- | :--- | :--- |
 | **P1** | Estudante Universitário | Avançado | Remoto (Discord) | Já entende de sistemas web, testou focando na velocidade. |
-
 | **P2** | Prima | Leigo | Presencial | Pouca familiaridade com sistemas de gestão, testou no seu notebook. |
-
 | **P3** | Estudante de Direito em Belo Horizonte | Médio | Presencial | Usa muitos apps no dia a dia, mas nunca usou um gerenciador acadêmico. |
 
 ---
@@ -59,13 +57,11 @@
 | **P1** | T3 | ✔️ | 00:30 | Nenhum | Nenhuma | "Faltou só um aviso visual de 'Salvo com sucesso'." | (print) |
 | **P1** | T4 | ✔️ | 00:50 | Nenhum | Nenhuma | N/A | (print) |
 | **P1** | T5 | ✔️ | 00:20 | Nenhum | Nenhuma | "A validação do backend segurou a data retroativa, legal." | (print) |
-
 | **P2** | T1 | ✔️ | 01:20 | Digitação | Demorou a ver o padrão da senha | "Achei a letra do formulário um pouco pequena." | (nota) |
 | **P2** | T2 | ✔️ | 00:30 | Nenhum | Nenhuma | N/A | (nota) |
 | **P2** | T3 | ⚠️ | 01:45 | Clique fora | Não sabia se tinha salvo | "Eu cliquei, mas não vi a tela mudar de cara logo de início." | (nota) |
 | **P2** | T4 | ⚠️ | 02:10 | Formato data | Tentou digitar a data com barras | "Queria um calendário para clicar no dia, digitar é chato." | (nota) |
 | **P2** | T5 | ✔️ | 01:00 | Nenhum |Assustou com o erro | "Apareceu o erro de data inválida, funcionou." | (print) |
-
 | **P3** | T1 | ✔️ | 01:00 | Nenhum | Nenhuma | "Tranquilo de criar a conta." | (print) |
 | **P3** | T2 | ✔️ | 00:25 | Nenhum | Nenhuma | N/A | (print) |
 | **P3** | T3 | ✔️ | 00:55 | Nenhum | Nenhuma | N/A | (print) |
@@ -89,9 +85,7 @@
 | Achado (O que foi observado) | Onde ocorreu (tarefa) | Impacto | Frequência (P1/P2/P3) | Prioridade | Ação recomendada | Issue (link) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Ausência de feedback visual ao salvar dados | T3/T4 | Médio | 2/3 | Média | Implementar alertas (Toast) de sucesso após salvar Disciplina/Tarefa. | https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/issues/13 |
-
 | Dificuldade na inserção de datas | T4 | Alto | 1/3 | Alta | Trocar o input de texto de data para um componente de Calendário (Date Picker). | https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/issues/14 |
-
 | Navegação entre criação e listagem confusa | T4 | Baixo | 1/3 | Baixa | Adicionar um botão de "Voltar" ou "Cancelar" nas telas de formulário. | https://github.com/AndreCS01/Gerenciador_de_Tarefas_e_Metas_Academicas/issues/15 |
 
 ---
@@ -103,9 +97,7 @@
 | **Principais pontos positivos** | O fluxo de cadastro e login funcionou sem gargalos para todos os perfis. As regras de negócio (bloqueio de data retroativa) foram acionadas corretamente. |
 | **Principais dificuldades** | A falta de um seletor visual de datas (calendário) e a ausência de mensagens de sucesso deixaram usuários leigos ligeiramente confusos sobre o status de suas ações. |
 | **Top 3 melhorias** | 1) Adicionar Date Picker no formulário de tarefas.
-
 2) Implementar Toasts de feedback visual.
-
 3) Melhorar botões de navegação (Voltar). |
 | **Go/No-Go para entrega** | Go. O sistema atende perfeitamente ao escopo do MVP, garantindo a organização acadêmica básica de forma estável. |
 | **Links de evidência** | (pasta /docs/testes/evidencias/) |
